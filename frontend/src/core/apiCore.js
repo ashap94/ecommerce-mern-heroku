@@ -30,6 +30,7 @@ export const getFilteredProducts = (skip, limit, filters = {}) => {
     limit,
     filters,
   };
+
   return fetch(`${API}/products/by/search`, {
     method: "POST",
     headers: {
