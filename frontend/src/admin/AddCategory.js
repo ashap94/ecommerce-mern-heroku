@@ -27,7 +27,7 @@ const AddCategory = () => {
     // make request to api to create category
     let capitalName = capitalizeString(name);
 
-    createCategory(user._id, token, { name: capitalName }).then((data) => {
+    createCategory(user._id, token, { name }).then((data) => {
       if (data.error) {
         setError(true);
         setSuccess(false);

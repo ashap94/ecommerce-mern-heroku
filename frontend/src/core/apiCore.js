@@ -61,3 +61,18 @@ export const list = (params) => {
       console.log(err);
     });
 };
+
+export const getProduct = (productId) => {
+  return fetch(`${API}/product/${productId}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
