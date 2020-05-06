@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { getProduct } from "./apiCore";
+import { getProduct, listRelated } from "./apiCore";
 import Layout from "./Layout";
 import Card from "./Card";
 
-const Product = ({ match }) => {
+const Product = (props) => {
   const [product, setProduct] = useState({});
+  const [relatedProducts, setRelatedProducts] = useState([]);
+
   const [error, setError] = useState(false);
 
   const loadSingleProduct = (productId) => {
@@ -13,14 +15,22 @@ const Product = ({ match }) => {
         setError(error);
       } else {
         setProduct(data);
+        listRelated(data._id).then((data) => {
+          if (data.error) {
+            setError(data.error);
+          } else {
+            setRelatedProducts(data);
+          }
+        });
       }
     });
   };
 
   useEffect(() => {
-    let productId = match.params.productId;
+    window.scrollTo(0, 0);
+    let productId = props.match.params.productId;
     loadSingleProduct(productId);
-  }, []);
+  }, [props]);
 
   //   const loadError = () => (
   //       error &&
@@ -37,8 +47,20 @@ const Product = ({ match }) => {
       <div className="row">
         <div className="col-8 mb-3">
           {product && product.description && (
-            <Card product={product} showViewProductButton={false} />
+            <Card
+              product={product}
+              showViewProductButton={false}
+              limitDescription={false}
+            />
           )}
+        </div>
+        <div className="col-4 mb-3">
+          <h4>Related Products</h4>
+          {relatedProducts.map((product, i) => (
+            <div className="mb-3">
+              <Card key={i} product={product} />
+            </div>
+          ))}
         </div>
       </div>
     </Layout>
