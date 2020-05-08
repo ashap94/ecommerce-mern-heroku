@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import ShowImage from "./ShowImage";
 import moment from "moment";
-import { addItem } from "./cartHelpers";
+import { addItem, updateItem, deleteItem } from "./cartHelpers";
 
 const Card = ({
   product,
@@ -10,8 +10,12 @@ const Card = ({
   limitDescription = true,
   showAddToCartButton = true,
   cartUpdate = false,
+  showRemoveItemButton = false,
+  setRun = (f) => f,
+  run = undefined,
 }) => {
   const [redirect, setRedirect] = useState(false);
+  const [count, setCount] = useState(product.count);
 
   const showViewButton = () => {
     return (
@@ -49,6 +53,22 @@ const Card = ({
     }
   };
 
+  const showRemoveButton = (showRemoveItemButton) => {
+    return (
+      showRemoveItemButton && (
+        <button
+          className="btn btn-outline-danger"
+          onClick={() => {
+            deleteItem(product._id);
+            setRun(!run);
+          }}
+        >
+          Remove Item
+        </button>
+      )
+    );
+  };
+
   const showAddToCart = (showAddToCartButton) => {
     return (
       showAddToCartButton && (
@@ -70,8 +90,30 @@ const Card = ({
     );
   };
 
+  const handleChange = (productId) => (e) => {
+    setRun(!run);
+    setCount(e.target.value < 1 ? 1 : e.target.value);
+    if (e.target.value >= 1) {
+      updateItem(productId, e.target.value);
+    }
+  };
+
   const showCartUpdateOptions = (cartUpdate) => {
-    return cartUpdate && <div>increment/decrement</div>;
+    return (
+      cartUpdate && (
+        <div className="input-group mb-3">
+          <div className="input-group-prepend">
+            <span className="input-group-text">Adjust Quantity</span>
+          </div>
+          <input
+            type="number"
+            className="form-control"
+            value={count}
+            onChange={handleChange(product._id)}
+          />
+        </div>
+      )
+    );
   };
 
   return (
@@ -92,6 +134,7 @@ const Card = ({
         <br></br>
 
         {showViewButton()}
+        {showRemoveButton(showRemoveItemButton)}
 
         {showAddToCart(showAddToCartButton)}
         {showCartUpdateOptions(cartUpdate)}

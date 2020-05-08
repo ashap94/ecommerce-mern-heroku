@@ -35,3 +35,28 @@ export const getCart = () => {
   }
   return [];
 };
+
+export const updateItem = (productId, count) => {
+  if (typeof window !== undefined) {
+    let cart = JSON.parse(localStorage.getItem("cart"));
+    cart.forEach((p) => {
+      if (p._id == productId) {
+        p.count = count;
+      }
+    });
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }
+};
+
+export const deleteItem = (productId) => {
+  let cart = [];
+  if (typeof window !== undefined) {
+    if (localStorage.getItem("cart")) {
+      cart = JSON.parse(localStorage.getItem("cart"));
+      const updatedCart = cart.filter((product) => product._id != productId);
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+    }
+  }
+  return cart;
+};
