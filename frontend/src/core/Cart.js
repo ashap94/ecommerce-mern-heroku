@@ -5,9 +5,20 @@ import Card from "./Card";
 import { getCart } from "./cartHelpers";
 import Checkout from "./Checkout";
 
+function useAsyncState(initialValue) {
+  const [value, setValue] = useState(initialValue);
+  const setter = (x) =>
+    new Promise((resolve) => {
+      setValue(x);
+      resolve(x);
+    });
+  return [value, setter];
+}
+
 const Cart = () => {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useAsyncState([]);
   const [run, setRun] = useState(false);
+  const [itemCounts, setItemCounts] = useState([]);
 
   useEffect(() => {
     setItems(getCart());

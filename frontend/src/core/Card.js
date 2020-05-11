@@ -13,9 +13,14 @@ const Card = ({
   showRemoveItemButton = false,
   setRun = (f) => f,
   run = undefined,
+  listPage = false,
 }) => {
   const [redirect, setRedirect] = useState(false);
   const [count, setCount] = useState(product.count);
+
+  // useEffect(() => {
+  //   setCount(product.count);
+  // }, [count]);
 
   const showViewButton = () => {
     return (
@@ -53,22 +58,6 @@ const Card = ({
     }
   };
 
-  const showRemoveButton = (showRemoveItemButton) => {
-    return (
-      showRemoveItemButton && (
-        <button
-          className="btn btn-outline-danger"
-          onClick={() => {
-            deleteItem(product._id);
-            setRun(!run);
-          }}
-        >
-          Remove Item
-        </button>
-      )
-    );
-  };
-
   const showAddToCart = (showAddToCartButton) => {
     return (
       showAddToCartButton && (
@@ -99,6 +88,8 @@ const Card = ({
   };
 
   const showCartUpdateOptions = (cartUpdate) => {
+    console.log("HERE IS COUNT:  ", count);
+    console.log("HERE IS PRODUCT COUNT:  ", product.count);
     return (
       cartUpdate && (
         <div className="input-group mb-3">
@@ -116,8 +107,25 @@ const Card = ({
     );
   };
 
+  const showRemoveButton = (showRemoveItemButton) => {
+    return (
+      showRemoveItemButton && (
+        <button
+          className="btn btn-outline-danger"
+          onClick={() => {
+            deleteItem(product._id);
+            setRun(!run);
+            setCount(product.count);
+          }}
+        >
+          Remove Item
+        </button>
+      )
+    );
+  };
+
   return (
-    <div className="card">
+    <div className="card flex-fill">
       <div className="card-header name">{product.name}</div>
       <div className="card-body">
         {shouldRedirect(redirect)}
@@ -125,10 +133,10 @@ const Card = ({
         <ShowImage item={product} url="product" />
         {showDescription()}
         <p className="black-10">${product.price}</p>
-        <p className="black-9">
+        <p className="black-10">
           Category: {product.category && product.category.name}
         </p>
-        <p className="black-8">Added {moment(product.createdAt).fromNow()}</p>
+        <p className="black-10">Added {moment(product.createdAt).fromNow()}</p>
 
         {showStock(product.quantity)}
         <br></br>

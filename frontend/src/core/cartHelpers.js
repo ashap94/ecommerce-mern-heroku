@@ -54,6 +54,7 @@ export const deleteItem = (productId) => {
   if (typeof window !== undefined) {
     if (localStorage.getItem("cart")) {
       cart = JSON.parse(localStorage.getItem("cart"));
+
       const updatedCart = cart.filter((product) => product._id != productId);
       localStorage.setItem("cart", JSON.stringify(updatedCart));
     }
