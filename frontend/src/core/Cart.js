@@ -31,15 +31,17 @@ const Cart = () => {
         <hr></hr>
         {items.map((p, i) => {
           return (
-            <Card
-              product={p}
-              key={i}
-              showAddToCartButton={false}
-              cartUpdate={true}
-              showRemoveItemButton={true}
-              run={run}
-              setRun={setRun}
-            />
+            <div className="mb-4">
+              <Card
+                product={p}
+                key={i}
+                showAddToCartButton={false}
+                cartUpdate={true}
+                showRemoveItemButton={true}
+                run={run}
+                setRun={setRun}
+              />
+            </div>
           );
         })}
       </div>
