@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Layout from "./Layout";
-import { getProducts } from "./apiCore";
-import Card from "./Card";
+// import Layout from "./Layout";
+import { getProducts, formatMoney } from "./apiCore";
+// import Card from "./Card";
 import { isAuthenticated } from "../auth";
 import { Link } from "react-router-dom";
 
@@ -24,7 +24,7 @@ const Checkout = ({ products }) => {
 
   return (
     <div>
-      <h2>Total: ${calculateCost()}</h2>
+      <h2>Total: ${formatMoney(calculateCost())}</h2>
       {showCheckout()}
     </div>
   );

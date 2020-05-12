@@ -3,6 +3,7 @@ import { Link, Redirect } from "react-router-dom";
 import ShowImage from "./ShowImage";
 import moment from "moment";
 import { addItem, updateItem, deleteItem } from "./cartHelpers";
+import { formatMoney } from "./apiCore";
 
 const Card = ({
   product,
@@ -132,7 +133,7 @@ const Card = ({
 
         <ShowImage item={product} url="product" />
         {showDescription()}
-        <p className="black-10">${product.price}</p>
+        <p className="black-10">${formatMoney(product.price)}</p>
         <p className="black-10">
           Category: {product.category && product.category.name}
         </p>
