@@ -81,16 +81,14 @@ const Card = ({
   };
 
   const handleChange = (productId) => (e) => {
-    setRun(!run);
     setCount(e.target.value < 1 ? 1 : e.target.value);
     if (e.target.value >= 1) {
       updateItem(productId, e.target.value);
     }
+    setRun(!run);
   };
 
   const showCartUpdateOptions = (cartUpdate) => {
-    console.log("HERE IS COUNT:  ", count);
-    console.log("HERE IS PRODUCT COUNT:  ", product.count);
     return (
       cartUpdate && (
         <div className="input-group mb-3">
@@ -100,7 +98,7 @@ const Card = ({
           <input
             type="number"
             className="form-control"
-            value={count}
+            value={product.count}
             onChange={handleChange(product._id)}
           />
         </div>
@@ -116,7 +114,7 @@ const Card = ({
           onClick={() => {
             deleteItem(product._id);
             setRun(!run);
-            setCount(product.count);
+            // setCount(product.count);
           }}
         >
           Remove Item

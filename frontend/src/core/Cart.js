@@ -5,18 +5,8 @@ import Card from "./Card";
 import { getCart } from "./cartHelpers";
 import Checkout from "./Checkout";
 
-function useAsyncState(initialValue) {
-  const [value, setValue] = useState(initialValue);
-  const setter = (x) =>
-    new Promise((resolve) => {
-      setValue(x);
-      resolve(x);
-    });
-  return [value, setter];
-}
-
 const Cart = () => {
-  const [items, setItems] = useAsyncState([]);
+  const [items, setItems] = useState([]);
   const [run, setRun] = useState(false);
   const [itemCounts, setItemCounts] = useState([]);
 
@@ -31,10 +21,9 @@ const Cart = () => {
         <hr></hr>
         {items.map((p, i) => {
           return (
-            <div className="mb-4">
+            <div key={i} className="mb-4">
               <Card
                 product={p}
-                key={i}
                 showAddToCartButton={false}
                 cartUpdate={true}
                 showRemoveItemButton={true}
@@ -70,7 +59,7 @@ const Cart = () => {
         <div className="col-6">
           <h2 className="mb-4">Your cart summary</h2>
           <hr></hr>
-          <Checkout products={items} />
+          <Checkout products={items} setItems={setItems} />
         </div>
       </div>
     </Layout>

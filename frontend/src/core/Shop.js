@@ -125,7 +125,7 @@ const Shop = () => {
           <h2 className="mb-4">Products</h2>
           <div className="card-deck">
             {filteredResults.map((product, idx) => (
-              <div key={product._id} className="col-md-4 mb-3 d-flex">
+              <div key={product._id} className="col-lg-4 mb-3 d-flex">
                 <Card product={product} listPage={true} />
               </div>
             ))}
