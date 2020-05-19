@@ -284,3 +284,7 @@ exports.listSearch = (req, res) => {
     }).select("-photo");
   }
 };
+
+exports.decreaseQuantity = (req, res, next) => {
+  let products = req.body.order.products;
+};

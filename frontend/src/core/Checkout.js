@@ -5,6 +5,7 @@ import {
   formatMoney,
   getBraintreeClientToken,
   processPayment,
+  createOrder,
 } from "./apiCore";
 import { emptyCart } from "./cartHelpers";
 // import Card from "./Card";
@@ -82,12 +83,21 @@ const Checkout = ({ products, setItems }) => {
           .then((response) => {
             console.log("SHOWING RESPONSE AFTER PAYMENT PROCESS:  ", response);
 
+            // create order
+            const createOrderData = {
+              products: products,
+              transaction_id: response.transaction.id,
+              amount: response.transaction.amount,
+              address: address,
+            };
+
+            createOrder(userId, token, createOrderData);
+
             // empty cart
             emptyCart(() => {
               setItems([]);
               setData({ ...data, success: response.success, loading: false });
             });
-            // create order
           })
           .catch((err) => {
             console.log("SHOWING ERROR AFTER PAYMENT PROCESS:  ", err);
@@ -100,10 +110,24 @@ const Checkout = ({ products, setItems }) => {
       });
   };
 
+  const handleAddress = (e) => {
+    setData({ ...data, address: e.target.value });
+  };
+
   const showDropIn = () => (
     <div onBlur={() => setData({ ...data, error: "" })}>
       {data.clientToken !== null && products.length > 0 ? (
         <div>
+          <div className="form-group mb-3">
+            <label className="text-muted">Delivery Address</label>
+            <textarea
+              className="form-control"
+              onChange={handleAddress}
+              value={address}
+              placeholder="Type your delivery address here..."
+            />
+          </div>
+
           <DropIn
             options={{
               authorization: data.clientToken,
