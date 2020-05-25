@@ -286,5 +286,21 @@ exports.listSearch = (req, res) => {
 };
 
 exports.decreaseQuantity = (req, res, next) => {
-  let products = req.body.order.products;
+  let bulkOps = req.body.order.products.map((item) => {
+    return {
+      updateOne: {
+        filter: { _id: item._id },
+        update: { $inc: { quantity: -item.count, sold: +item.count } },
+      },
+    };
+  });
+
+  Product.bulkWrite(bulkOps, {}, (err, products) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Could not update product",
+      });
+    }
+    next();
+  });
 };

@@ -12,6 +12,7 @@ import { emptyCart } from "./cartHelpers";
 import { isAuthenticated } from "../auth";
 import { Link } from "react-router-dom";
 import DropIn from "braintree-web-drop-in-react";
+import { country_list } from "./List_of_Countries";
 
 const Checkout = ({ products, setItems }) => {
   const [data, setData] = useState({
@@ -41,6 +42,10 @@ const Checkout = ({ products, setItems }) => {
   useEffect(() => {
     getToken(userId, token);
   }, []);
+
+  // useEffect(() => {
+  //   console.log("Address:  ", JSON.stringify(address));
+  // }, [address]);
 
   const calculateCost = () => {
     return products.reduce((accum, product) => {

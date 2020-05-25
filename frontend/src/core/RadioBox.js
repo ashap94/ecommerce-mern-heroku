@@ -17,7 +17,7 @@ const RadioBox = ({ prices, handleFilters }) => {
         type="radio"
         name={p}
       />
-      <label class="form-check-label">{p.name}</label>
+      <label className="form-check-label">{p.name}</label>
     </div>
   ));
 };

@@ -135,7 +135,9 @@ export const createOrder = (userId, token, createOrderData) => {
     .then((response) => {
       return response.json();
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return err.json();
+    });
 };
 
 export const formatMoney = (

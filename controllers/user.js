@@ -66,9 +66,7 @@ exports.addOrderToUserHistory = (req, res, next) => {
           error: "Could not update user purchase history",
         });
       }
-      console.log("USER HISTORY BEFORE UPDATE:  ", req.profile.history);
-      req.profile = user;
-      console.log("USER HISTORY AFTER UPDATE:  ", req.profile.history);
+      // req.profile = user;
 
       next();
     }
