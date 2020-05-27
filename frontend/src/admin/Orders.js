@@ -126,7 +126,7 @@ const Orders = () => {
               >
                 <h2 className="mb-5">
                   <span
-                    className="bg-primary text-white"
+                    className=""
                     style={{
                       borderRadius: "5px",
                     }}
@@ -153,7 +153,8 @@ const Orders = () => {
                     )}
                   </li>
                   <li className="list-group-item">
-                    Delivery Address: {o.address}
+                    Delivery Address:{" "}
+                    <div style={{ whiteSpace: "pre-wrap" }}>{o.address}</div>
                   </li>
                 </ul>
 

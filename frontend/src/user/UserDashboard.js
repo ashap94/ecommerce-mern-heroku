@@ -1,12 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../core/Layout";
 import { isAuthenticated } from "../auth";
 import { Link } from "react-router-dom";
+import { getUserPurchaseHistory } from "./apiUser";
 
 const Dashboard = () => {
+  const [history, setHistory] = useState([]);
+  const [error, setError] = useState(false);
+
   const {
     user: { _id, name, email, role },
   } = isAuthenticated();
+
+  const token = isAuthenticated().token;
+
+  const init = () => {
+    getUserPurchaseHistory(_id, token).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setHistory(data);
+      }
+    });
+  };
+
+  useEffect(() => {
+    init();
+  }, []);
 
   const userLinks = () => {
     return (
@@ -20,7 +40,7 @@ const Dashboard = () => {
           </li>
 
           <li className="list-group-item">
-            <Link className="nav-link" to="/profile/update">
+            <Link className="nav-link" to={`/profile/${_id}`}>
               Update Profile
             </Link>
           </li>
@@ -44,12 +64,14 @@ const Dashboard = () => {
     );
   };
 
-  const purchaseHistory = () => {
+  const purchaseHistory = (history) => {
     return (
       <div className="card mb-5">
         <h3 className="card-header">Purchase History</h3>
         <ul className="list-group">
-          <li className="list-group-item">History</li>
+          {history.map((order, oIndex) => {
+            return <li className="list-group-item "></li>;
+          })}
         </ul>
       </div>
     );
@@ -65,7 +87,7 @@ const Dashboard = () => {
         <div className="col-md-3 mb-5">{userLinks()}</div>
         <div className="col-md-9">
           {userInfo()}
-          {purchaseHistory()}
+          {purchaseHistory(history)}
         </div>
       </div>
     </Layout>
