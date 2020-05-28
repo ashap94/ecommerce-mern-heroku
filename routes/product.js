@@ -43,6 +43,7 @@ router.get("/products/search", listSearch);
 router.param("userId", userById);
 router.param("productId", productById);
 router.post("/products/by/search", listBySearch);
+
 router.get("/product/photo/:productId", photo);
 
 module.exports = router;

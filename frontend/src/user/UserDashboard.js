@@ -3,6 +3,9 @@ import Layout from "../core/Layout";
 import { isAuthenticated } from "../auth";
 import { Link } from "react-router-dom";
 import { getUserPurchaseHistory } from "./apiUser";
+import moment from "moment";
+import { formatMoney } from "../core/apiCore";
+import ShowListItemImage from "./ShowListItemImage";
 
 const Dashboard = () => {
   const [history, setHistory] = useState([]);
@@ -68,9 +71,61 @@ const Dashboard = () => {
     return (
       <div className="card mb-5">
         <h3 className="card-header">Purchase History</h3>
-        <ul className="list-group">
+        <ul className="list-group" style={{ borderRadius: "5px" }}>
           {history.map((order, oIndex) => {
-            return <li className="list-group-item "></li>;
+            return (
+              <li className="list-group-item" key={order._id + `${oIndex}`}>
+                <div
+                  className="d-flex flex-row justify-content-between p-3"
+                  style={{ backgroundColor: "rgb(246,246,246)" }}
+                >
+                  <div class="d-flex flex-row">
+                    <div className="d-flex flex-column mr-4">
+                      <div className="font-weight-light">ORDER PLACED</div>
+                      <div className="font-weight-light">
+                        {moment(order.createdAt).format("MMM D, YYYY")}
+                      </div>
+                    </div>
+
+                    <div className="d-flex flex-column mr-1">
+                      <div className="font-weight-light">TOTAL</div>
+                      <div className="font-weight-light">
+                        ${formatMoney(order.amount)}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-column">
+                    <div className="font-weight-light">ORDER ID</div>
+                    <div className="font-weight-light">{order._id}</div>
+                  </div>
+                </div>
+                {order.products.map((product, pIndex) => {
+                  return (
+                    <div className="d-flex flex-row mt-4">
+                      <ShowListItemImage item={product} />
+
+                      <div className="d-flex flex-column">
+                        <Link
+                          to={`/product/${product._id}`}
+                          className="text-info"
+                        >
+                          {product.name}
+                        </Link>
+
+                        <div className="font-weight-light">
+                          Quantity: {product.count}
+                        </div>
+
+                        <div className="font-weight-light">
+                          Price per unit: ${formatMoney(product.price)}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </li>
+            );
           })}
         </ul>
       </div>

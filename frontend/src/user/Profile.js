@@ -128,7 +128,7 @@ const Profile = (props) => {
         />
       </div>
       <button onClick={clickSubmit} className="btn btn-primary">
-        Submit
+        Update
       </button>
     </form>
   );
