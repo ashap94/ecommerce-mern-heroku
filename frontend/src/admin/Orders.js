@@ -5,6 +5,7 @@ import { isAuthenticated } from "../auth";
 import { formatMoney } from "../core/apiCore";
 import { Link, withRouter } from "react-router-dom";
 import moment from "moment";
+import ShowListItemImage from "../user/ShowListItemImage";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -119,9 +120,9 @@ const Orders = () => {
             return (
               <div
                 className="mt-5"
-                style={{
-                  borderBottom: "5px solid indigo",
-                }}
+                // style={{
+                //   borderBottom: "5px solid indigo",
+                // }}
                 key={oIndex}
               >
                 <h2 className="mb-5">
@@ -158,25 +159,46 @@ const Orders = () => {
                   </li>
                 </ul>
 
-                <h3 className="mt-5 mb-5 font-italic">
-                  Total products in the order:{" "}
-                  <span className="text-danger">{o.products.length}</span>
-                </h3>
+                <div
+                  className="mt-4"
+                  style={{ border: "1px solid rgb(223,223,223)" }}
+                >
+                  <h3
+                    className="p-3 font-italic"
+                    style={{ borderBottom: "1px solid rgb(223,223,223)" }}
+                  >
+                    Total products in the order:{" "}
+                    <span className="text-danger">{o.products.length}</span>
+                  </h3>
+                  {o.products.map((product, pIndex) => {
+                    return (
+                      <div className="pl-2 d-flex flex-row mt-4 mb-4">
+                        <ShowListItemImage item={product} />
 
-                {o.products.map((p, pIndex) => {
-                  return (
-                    <div
-                      className="mb-4"
-                      key={pIndex}
-                      style={{ padding: "20px", border: "1px solid indigo" }}
-                    >
-                      {showInput("Product name", p.name)}
-                      {showInput("Product price", p.price)}
-                      {showInput("No. of items", p.count)}
-                      {showInput("Product ID", p._id)}
-                    </div>
-                  );
-                })}
+                        <div className="d-flex flex-column">
+                          <Link
+                            to={`/product/${product._id}`}
+                            className="text-info"
+                          >
+                            {product.name}
+                          </Link>
+
+                          <div className="font-weight-light">
+                            Item ID: {product._id}
+                          </div>
+
+                          <div className="font-weight-light">
+                            Units Ordered: {product.count}
+                          </div>
+
+                          <div className="font-weight-light">
+                            Price per unit: ${formatMoney(product.price)}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             );
           })}
