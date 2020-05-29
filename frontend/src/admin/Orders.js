@@ -146,6 +146,10 @@ const Orders = () => {
                   </li>
                   <li className="list-group-item">Ordered By: {o.user.name}</li>
                   <li className="list-group-item">
+                    User's email: {o.user.email}
+                  </li>
+
+                  <li className="list-group-item">
                     Ordered {moment(o.createdAt).fromNow()}
                     <br></br>
                     <br></br>

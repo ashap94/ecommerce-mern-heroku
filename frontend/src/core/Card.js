@@ -20,8 +20,8 @@ const Card = ({
   const [count, setCount] = useState(product.count);
 
   // useEffect(() => {
-  //   setCount(product.count);
-  // }, [count]);
+  //   console.log("PRODUCT CATEGORY IS OF TYPE:  ", typeof product.category);
+  // }, []);
 
   const showViewButton = () => {
     return (
@@ -123,6 +123,14 @@ const Card = ({
     );
   };
 
+  const displayCategoryName = (product) => {
+    if (typeof product.category === "object") {
+      return product.category.name;
+    } else {
+      return product.category;
+    }
+  };
+
   return (
     <div className="card flex-fill">
       <div className="card-header name">{product.name}</div>
@@ -133,7 +141,7 @@ const Card = ({
         {showDescription()}
         <p className="black-10">${formatMoney(product.price)}</p>
         <p className="black-10">
-          Category: {product.category && product.category.name}
+          Category: {product.category && displayCategoryName(product)}
         </p>
         <p className="black-10">Added {moment(product.createdAt).fromNow()}</p>
 

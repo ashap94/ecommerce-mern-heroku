@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { signout, isAuthenticated } from "../auth/index";
 import { itemTotal } from "./cartHelpers";
@@ -39,7 +39,7 @@ const Menu = ({ history }) => {
           >
             Cart{" "}
             <sup>
-              <small className="cart-badge">{itemTotal()}</small>
+              <small id="cart-badge">{itemTotal()}</small>
             </sup>
           </Link>
         </li>

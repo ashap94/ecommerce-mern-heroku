@@ -6,6 +6,7 @@ export const addItem = (item, next) => {
     }
     cart.push({
       ...item,
+      category: item.category.name,
       count: 1,
     });
 
