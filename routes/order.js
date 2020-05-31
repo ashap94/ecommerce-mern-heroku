@@ -11,6 +11,11 @@ const {
   orderById,
 } = require("../controllers/order");
 const { decreaseQuantity } = require("../controllers/product");
+const { verifyAddress } = require("../validator/address");
+
+// ADDRESS VERIFIER, TURN INTO MIDDLEWARE FOR CREATE ORDER UPON AFFIRMATION WORKING
+
+router.post("/verify-address", verifyAddress);
 
 router.post(
   "/order/create/:userId",

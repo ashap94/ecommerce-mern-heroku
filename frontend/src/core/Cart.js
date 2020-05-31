@@ -9,9 +9,23 @@ const Cart = () => {
   const [items, setItems] = useState([]);
   const [run, setRun] = useState(false);
   const [itemCounts, setItemCounts] = useState([]);
+  const [itemShipping, setItemShipping] = useState(false);
+
+  const findIfProductsHaveShipping = (products) => {
+    if (products.some((product) => product.shipping === true)) {
+      return true;
+    }
+    return false;
+  };
 
   useEffect(() => {
-    setItems(getCart());
+    const cart = getCart();
+    if (findIfProductsHaveShipping(cart)) {
+      setItemShipping(true);
+    } else {
+      setItemShipping(false);
+    }
+    setItems(cart);
   }, [run]);
 
   const showItems = (items) => {
@@ -59,7 +73,11 @@ const Cart = () => {
         <div className="col-6">
           <h2 className="mb-4">Your cart summary</h2>
           <hr></hr>
-          <Checkout products={items} setItems={setItems} />
+          <Checkout
+            products={items}
+            setItems={setItems}
+            shipping={itemShipping}
+          />
         </div>
       </div>
     </Layout>

@@ -15,7 +15,7 @@ import DropIn from "braintree-web-drop-in-react";
 // import { country_list } from "./List_of_Countries";
 import { USStates } from "./List_of_US_States";
 
-const Checkout = ({ products, setItems }) => {
+const Checkout = ({ products, setItems, shipping = false }) => {
   const [data, setData] = useState({
     loading: false,
     success: false,
@@ -27,7 +27,6 @@ const Checkout = ({ products, setItems }) => {
     city: "",
     state: "",
     zipCode: "",
-    shipping: false,
   });
 
   const {
@@ -40,7 +39,6 @@ const Checkout = ({ products, setItems }) => {
     city,
     state,
     zipCodem,
-    shipping,
     loading,
     zipCode,
   } = data;
@@ -58,12 +56,14 @@ const Checkout = ({ products, setItems }) => {
     });
   };
 
-  const findIfProductsHaveShipping = (products) => {
-    if (products.some((product) => product.shipping === true)) {
-      setData({ ...data, shipping: true });
-    }
+  // const findIfProductsHaveShipping = (products) => {
+  //   if (products.some((product) => product.shipping === true)) {
+  //     setData({ ...data, shipping: true });
+  //   } else {
+  //     setData({ ...data, shipping: false });
+  //   }
 
-    /* 
+  /* 
     - if shipping is true, allow input fields to be editable
     - if false, make input fields disabled and/or display message that shipping is not required
     - need to make api function call not allowed to be sent if user does not fill in fields 
@@ -73,11 +73,10 @@ const Checkout = ({ products, setItems }) => {
       - server side error handling should be implmented if user somehow manages to send api request
         without interaction from the client UI
     */
-  };
+  // };
 
   useEffect(() => {
     getToken(userId, token);
-    findIfProductsHaveShipping(products);
   }, []);
 
   // useEffect(() => {
@@ -126,6 +125,15 @@ const Checkout = ({ products, setItems }) => {
             console.log("SHOWING RESPONSE AFTER PAYMENT PROCESS:  ", response);
 
             // create order
+
+            // create aggregated address object from all address input field data
+            // const addressObject = {
+            //   street1: address,
+            //   street2: address2,
+            //   city: city,
+            //   state
+            // }
+
             const createOrderData = {
               products: products,
               transaction_id: response.transaction.id,
@@ -189,9 +197,17 @@ const Checkout = ({ products, setItems }) => {
               border: "3px solid rgb(247,247,249)",
               borderRadius: "5px",
             }}
-            className="p-2"
+            className="p-3 mb-2"
           >
-            <label>Shipping Address</label>
+            <label>
+              Shipping Address{" "}
+              <span
+                style={{ display: shipping ? "none" : "" }}
+                className="text-muted"
+              >
+                (not required, no physical items in cart)
+              </span>
+            </label>
             <div className="form-group">
               <label className="text-muted">Address</label>
               <input
@@ -200,7 +216,7 @@ const Checkout = ({ products, setItems }) => {
                 onChange={handleAddressField("address")}
                 value={address}
                 placeholder="1234 Main St"
-                disabled={false}
+                disabled={shipping ? false : true}
               />
             </div>
             <div className="form-group">
@@ -211,7 +227,7 @@ const Checkout = ({ products, setItems }) => {
                 onChange={handleAddressField("address2")}
                 value={address2}
                 placeholder="Apartment, studio, or floor"
-                disabled={false}
+                disabled={shipping ? false : true}
               />
             </div>
             <div className="form-row">
@@ -222,7 +238,7 @@ const Checkout = ({ products, setItems }) => {
                   className="form-control"
                   onChange={handleAddressField("city")}
                   value={city}
-                  disabled={false}
+                  disabled={shipping ? false : true}
                 />
               </div>
               <div className="form-group col-md-4">
@@ -231,7 +247,7 @@ const Checkout = ({ products, setItems }) => {
                   className="form-control"
                   onChange={handleAddressField("state")}
                   value={state}
-                  disabled={false}
+                  disabled={shipping ? false : true}
                 >
                   <option className="text-muted">Choose...</option>
                   {USStates.map((state, i) => (
@@ -249,7 +265,7 @@ const Checkout = ({ products, setItems }) => {
                   className="form-control"
                   onChange={handleAddressField("zipCode")}
                   value={zipCode}
-                  disabled={false}
+                  disabled={shipping ? false : true}
                 />
               </div>
             </div>
@@ -264,9 +280,15 @@ const Checkout = ({ products, setItems }) => {
             }}
             onInstance={(instance) => (data.instance = instance)}
           />
-          <button onClick={buy} className="btn btn-success">
-            Pay
-          </button>
+          <div className="d-flex justify-content-center">
+            <button
+              onClick={buy}
+              className="btn btn-success"
+              style={{ width: "95%" }}
+            >
+              Pay
+            </button>
+          </div>
         </div>
       ) : null}
     </div>
