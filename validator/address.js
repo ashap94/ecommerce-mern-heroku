@@ -18,17 +18,28 @@ exports.verifyAddress = (req, res, next) => {
       });
     }
 
-    const verifiedAddress = addr;
-    delete verifiedAddress["id"];
-    delete verifiedAddress["object"];
-    delete verifiedAddress["mode"];
-    delete verifiedAddress["verify"];
-    delete verifiedAddress["verifications"];
+    // const verifiedAddress = addr;
+    // delete verifiedAddress["id"];
+    // delete verifiedAddress["object"];
+    // delete verifiedAddress["mode"];
+    // delete verifiedAddress["verify"];
+    // delete verifiedAddress["verifications"];
+
+    const verifiedAddress = {
+      name: addr.name,
+      street1: addr.street1,
+      street2: addr.street2,
+      city: addr.city,
+      state: addr.state,
+      zip: addr.zip,
+      country: addr.country,
+      company: addr.company,
+    };
 
     req.verifiedAddress = verifiedAddress;
     console.log("ADDRESS IN REQUEST:  ", req.verifiedAddress);
 
-    res.json(verifyAddress);
+    res.json(verifiedAddress);
 
     /*
         utilize str appendation when necessary for parsing address data and storing in database

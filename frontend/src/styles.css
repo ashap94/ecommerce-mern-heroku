@@ -7,6 +7,20 @@
   border-radius: 0px;
 }
 
+/* zip code field */
+
+/* Chrome, Safari, Edge, Opera */
+#zip-code-field::-webkit-outer-spin-button,
+#zip-code-field::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+#zip-code-field[type="number"] {
+  -moz-appearance: textfield;
+}
+
 /* cart badge */
 
 #cart-badge,
