@@ -12,6 +12,12 @@ const isActive = (history, path) => {
 };
 
 const Menu = ({ history }) => {
+  const [loaded, setLoaded] = useState(false);
+
+  // useEffect(() => {
+
+  // }, [])
+
   return (
     <div>
       <ul className="nav nav-tabs bg-primary">

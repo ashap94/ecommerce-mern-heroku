@@ -140,6 +140,23 @@ export const createOrder = (userId, token, createOrderData) => {
     });
 };
 
+export const verifyDeliveryAddress = (address) => {
+  return fetch(`${API}/verify-address`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ address }),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => {
+      return err.json();
+    });
+};
+
 export const formatMoney = (
   amount,
   decimalCount = 2,

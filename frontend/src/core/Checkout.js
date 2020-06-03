@@ -6,6 +6,7 @@ import {
   getBraintreeClientToken,
   processPayment,
   createOrder,
+  verifyDeliveryAddress,
 } from "./apiCore";
 import { emptyCart } from "./cartHelpers";
 // import Card from "./Card";
@@ -126,7 +127,7 @@ const Checkout = ({ products, setItems, shipping = false }) => {
       errors.push("Zip Code Must be a 5 digit number");
     }
 
-    let addressObject = {};
+    let addressObject = null;
 
     if (formIsValid) {
       addressObject = constructAddressObject(formIsValid, data);
@@ -154,9 +155,28 @@ const Checkout = ({ products, setItems, shipping = false }) => {
     */
   // };
 
+  const clearAddressFields = () => {
+    setData({
+      ...data,
+      address: "",
+      address2: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      company: "",
+      name: "",
+    });
+  };
+
   useEffect(() => {
     getToken(userId, token);
   }, []);
+
+  useEffect(() => {
+    if (!shipping) {
+      clearAddressFields();
+    }
+  }, [shipping]);
 
   const calculateCost = () => {
     return products.reduce((accum, product) => {
@@ -174,22 +194,72 @@ const Checkout = ({ products, setItems, shipping = false }) => {
     );
   };
 
+  // const verifyAddress = async (address) => {
+  //   let realAddress = false; // toggle for detection of boolean
+  //   console.log("WHAT DOES ADDRESS LOOK LIKE IN VERIFY ADDRESS:  ", address);
+  //   try {
+  //     let response = await verifyDeliveryAddress(address);
+  //     console.log("PROMISE ADDRESS VERIFIED:  ", response);
+  //   } catch (errors) {
+  //     console.log("PROMISE ADDRESS NOT DELIVERABLE:  ", errors);
+  //     // setData({ ...data, addressErrors: errors });
+  //     realAddress = false;
+  //   }
+  //   return realAddress;
+  // };
+
   const buy = () => {
     setData({ ...data, loading: true, addressErrors: [] });
     // send the nonce to your server
     // nonce = data.instance.requestPaymentMethod()
     let nonce;
     // let getNonce =
-    const { formIsValid, addressObject, errors } = handleInputValidation();
+    let addressFields = null;
+    let validForm = true;
+    let errorsAddress = [];
 
-    if (!formIsValid || formIsValid) {
-      setData({ ...data, loading: false, addressErrors: errors });
-      console.log("formIsValid:  ", formIsValid);
-      console.log("WHAT DOES ADDRESS OBJECT LOOK LIKE:  ", addressObject);
+    if (shipping) {
+      const { formIsValid, addressObject, errors } = handleInputValidation();
+      addressFields = addressObject;
+      validForm = formIsValid;
+      errorsAddress = errors;
+    }
+
+    if (!validForm) {
+      setData({ ...data, loading: false, addressErrors: errorsAddress });
+      console.log("formIsValid:  ", validForm);
+      console.log("WHAT DOES ADDRESS OBJECT LOOK LIKE:  ", addressFields);
       return;
     }
 
     const dataState = data;
+    let legitimateAddressCheck = true;
+
+    if (shipping) {
+      verifyDeliveryAddress(addressFields).then((data) => {
+        if (data.errors) {
+          setData({
+            ...dataState,
+            loading: false,
+            addressErrors: data.errors.map((err) => err.message),
+          });
+
+          legitimateAddressCheck = false;
+
+          console.log("HERE ARE THE ERRORS:  ", data.errors);
+          return;
+        } else {
+          addressFields = data;
+          console.log("HERE IS THE PROMISE ADDRESS:  ", addressFields);
+          return;
+        }
+      });
+    }
+
+    if (!legitimateAddressCheck) {
+      console.log("PREMATURE LEAVING OF PROMISE FUNCTION: 321j312i3o12");
+      return;
+    }
 
     data.instance
       .requestPaymentMethod()
@@ -225,7 +295,7 @@ const Checkout = ({ products, setItems, shipping = false }) => {
               products: products,
               transaction_id: response.transaction.id,
               amount: response.transaction.amount,
-              address: addressObject,
+              address: addressFields ? addressFields : {},
             };
 
             createOrder(userId, token, createOrderData);
@@ -233,17 +303,21 @@ const Checkout = ({ products, setItems, shipping = false }) => {
             // empty cart
             emptyCart(() => {
               setItems([]);
-              setData({ ...data, success: response.success, loading: false });
+              setData({
+                ...dataState,
+                success: response.success,
+                loading: false,
+              });
             });
           })
           .catch((err) => {
             console.log("SHOWING ERROR AFTER PAYMENT PROCESS:  ", err);
-            setData({ ...data, error: err, loading: false });
+            setData({ ...dataState, error: err, loading: false });
           });
       })
       .catch((err) => {
         console.log("dropin error: ", err);
-        setData({ ...data, error: err.message, loading: false });
+        setData({ ...dataState, error: err.message, loading: false });
       });
   };
 
@@ -278,11 +352,12 @@ const Checkout = ({ products, setItems, shipping = false }) => {
   */
 
   const showDropIn = () => (
-    <div onBlur={() => setData({ ...data, error: "" })}>
+    <div onBlur={() => setData({ ...data, error: "" })} className="mb-5">
       {data.clientToken !== null && products.length > 0 ? (
         <div>
           <form
             style={{
+              display: shipping ? "" : "none",
               border: "3px solid rgb(247,247,249)",
               borderRadius: "5px",
             }}

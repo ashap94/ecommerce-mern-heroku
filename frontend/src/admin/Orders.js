@@ -43,6 +43,14 @@ const Orders = () => {
     loadStatusValues();
   }, []);
 
+  const addressObjectToStringParser = (addressObject) => {
+    return `${addressObject.name}\n${
+      addressObject.company ? addressObject.company + "\n" : ""
+    }${addressObject.street1}\n${
+      addressObject.street2 ? addressObject.street2 + "\n" : ""
+    }${addressObject.city} ${addressObject.state} ${addressObject.zip}`;
+  };
+
   const showOrderLength = () => {
     if (orders.length > 0) {
       return <h1 className="text-danger">Total orders: {orders.length}</h1>;
@@ -96,7 +104,7 @@ const Orders = () => {
           <option>Update Status</option>
           {statusValues.map((status, sIndex) => {
             return (
-              <option key={sIndex} value={status}>
+              <option key={sIndex + `${status}`} value={status}>
                 {status}
               </option>
             );
@@ -123,7 +131,7 @@ const Orders = () => {
                 // style={{
                 //   borderBottom: "5px solid indigo",
                 // }}
-                key={oIndex}
+                key={oIndex + `${o._id}`}
               >
                 <h2 className="mb-5">
                   <span
@@ -159,7 +167,9 @@ const Orders = () => {
                   </li>
                   <li className="list-group-item">
                     Delivery Address:{" "}
-                    <div style={{ whiteSpace: "pre-wrap" }}>{o.address}</div>
+                    <div style={{ whiteSpace: "pre-wrap" }}>
+                      {addressObjectToStringParser(o.address)}
+                    </div>
                   </li>
                 </ul>
 
@@ -176,7 +186,10 @@ const Orders = () => {
                   </h3>
                   {o.products.map((product, pIndex) => {
                     return (
-                      <div className="pl-2 d-flex flex-row mt-4 mb-4">
+                      <div
+                        className="pl-2 d-flex flex-row mt-4 mb-4"
+                        key={product._id + `${pIndex}`}
+                      >
                         <ShowListItemImage item={product} />
 
                         <div className="d-flex flex-column">

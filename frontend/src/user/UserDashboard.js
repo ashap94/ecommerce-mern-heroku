@@ -67,6 +67,14 @@ const Dashboard = () => {
     );
   };
 
+  const addressObjectToStringParser = (addressObject) => {
+    return `${addressObject.name}\n${
+      addressObject.company ? addressObject.company + "\n" : ""
+    }${addressObject.street1}\n${
+      addressObject.street2 ? addressObject.street2 + "\n" : ""
+    }${addressObject.city} ${addressObject.state} ${addressObject.zip}`;
+  };
+
   const purchaseHistory = (history) => {
     return (
       <div className="card mb-5">
@@ -79,7 +87,7 @@ const Dashboard = () => {
                   className="d-flex flex-row justify-content-between p-3"
                   style={{ backgroundColor: "rgb(246,246,246)" }}
                 >
-                  <div class="d-flex flex-row">
+                  <div className="d-flex flex-row">
                     <div className="d-flex flex-column mr-4">
                       <div className="font-weight-light">ORDER PLACED</div>
                       <div className="font-weight-light">
@@ -95,14 +103,17 @@ const Dashboard = () => {
                     </div>
                   </div>
 
-                  <div class="d-flex flex-column">
+                  <div className="d-flex flex-column">
                     <div className="font-weight-light">ORDER ID</div>
                     <div className="font-weight-light">{order._id}</div>
                   </div>
                 </div>
                 {order.products.map((product, pIndex) => {
                   return (
-                    <div className="d-flex flex-row mt-4">
+                    <div
+                      className="d-flex flex-row mt-4"
+                      key={pIndex + `${product._id}`}
+                    >
                       <ShowListItemImage item={product} />
 
                       <div className="d-flex flex-column">
