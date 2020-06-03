@@ -10,6 +10,7 @@ import ShowListItemImage from "./ShowListItemImage";
 const Dashboard = () => {
   const [history, setHistory] = useState([]);
   const [error, setError] = useState(false);
+  const [modalDisplay, setModalDisplay] = useState(false);
 
   const {
     user: { _id, name, email, role },
@@ -30,6 +31,10 @@ const Dashboard = () => {
   useEffect(() => {
     init();
   }, []);
+
+  useEffect(() => {
+    console.log("HERE IS WHAT HISTORY LOOKS LIKE:  ", history);
+  }, [history]);
 
   const userLinks = () => {
     return (
@@ -67,6 +72,10 @@ const Dashboard = () => {
     );
   };
 
+  const changeModalDisplay = () => {
+    setModalDisplay(!modalDisplay);
+  };
+
   const addressObjectToStringParser = (addressObject) => {
     return `${addressObject.name}\n${
       addressObject.company ? addressObject.company + "\n" : ""
@@ -101,6 +110,27 @@ const Dashboard = () => {
                         ${formatMoney(order.amount)}
                       </div>
                     </div>
+                  </div>
+
+                  <div className="d-flex flex-column">
+                    <div>SHIP TO</div>
+                    {order.address ? (
+                      <div className="name-address-modal-container">
+                        <span className="order-recipient-name">
+                          {order.address.name}
+                        </span>
+                        <div className="p-3 address-modal hidden">
+                          {addressObjectToStringParser(order.address)}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="name-address-modal-container">
+                        <span className="order-recipient-name">{name}</span>
+                        <div className="p-3 address-modal hidden">
+                          Delivery Address Not Required
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="d-flex flex-column">

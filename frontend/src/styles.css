@@ -21,6 +21,34 @@
   -moz-appearance: textfield;
 }
 
+.hidden {
+  display: none;
+}
+
+/* address-modal */
+
+.address-modal {
+  white-space: pre-wrap;
+  background: white;
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 5px;
+  position: absolute;
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.name-address-modal-container:hover .hidden {
+  display: block;
+}
+
+.order-recipient-name {
+  color: rgb(21, 127, 251);
+  cursor: pointer;
+}
+
+.order-recipient-name:hover {
+  text-decoration: underline;
+}
+
 /* cart badge */
 
 #cart-badge,

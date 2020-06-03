@@ -168,7 +168,9 @@ const Orders = () => {
                   <li className="list-group-item">
                     Delivery Address:{" "}
                     <div style={{ whiteSpace: "pre-wrap" }}>
-                      {addressObjectToStringParser(o.address)}
+                      {o.address
+                        ? addressObjectToStringParser(o.address)
+                        : "\nNo Shipping Required"}
                     </div>
                   </li>
                 </ul>
