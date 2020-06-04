@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useRef } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { signout, isAuthenticated } from "../auth/index";
 import { itemTotal } from "./cartHelpers";
@@ -13,10 +13,24 @@ const isActive = (history, path) => {
 
 const Menu = ({ history }) => {
   const [loaded, setLoaded] = useState(false);
+  const cartBadgeRef = useRef(null);
 
-  // useEffect(() => {
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
 
-  // }, [])
+  useEffect(() => {
+    const { current } = cartBadgeRef;
+
+    let height = current.offsetHeight;
+    let width = current.offsetWidth;
+
+    if (height > width) {
+      current.style.width = height + "px";
+    } else if (height < width) {
+      current.css.height = width + "px";
+    }
+  }, [loaded]);
 
   return (
     <div>
@@ -44,8 +58,8 @@ const Menu = ({ history }) => {
             style={isActive(history, "/cart")}
           >
             Cart{" "}
-            <sup>
-              <small id="cart-badge">{itemTotal()}</small>
+            <sup id="cart-badge" ref={cartBadgeRef}>
+              {itemTotal()}
             </sup>
           </Link>
         </li>
