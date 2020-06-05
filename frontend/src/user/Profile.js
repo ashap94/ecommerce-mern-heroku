@@ -10,9 +10,11 @@ const Profile = (props) => {
     email: "",
     password: "",
     password2: "",
-    error: false,
+    oldPassword: "",
+    error: "",
     success: false,
-    passwordError: false,
+    passwordError: "",
+    loading: true,
   });
 
   const {
@@ -23,15 +25,22 @@ const Profile = (props) => {
     error,
     success,
     passwordError,
+    oldPassword,
+    loading,
   } = values;
   const { token } = isAuthenticated();
 
   const init = (userId) => {
     read(userId, token).then((data) => {
       if (data.error) {
-        setValues({ ...values, error: true });
+        setValues({ ...values, error: data.error, loading: false });
       } else {
-        setValues({ ...values, name: data.name, email: data.email });
+        setValues({
+          ...values,
+          name: data.name,
+          email: data.email,
+          loading: false,
+        });
       }
     });
   };
@@ -43,7 +52,7 @@ const Profile = (props) => {
   const handleChange = (field) => (e) => {
     setValues({
       ...values,
-      error: false,
+      error: "",
       [field]: e.target.value,
       passwordError: false,
     });
@@ -57,8 +66,16 @@ const Profile = (props) => {
         name,
         email,
         password,
+        oldPassword,
       };
     } else {
+      if (!!oldPassword) {
+        setValues({
+          ...values,
+          error: "Please clear 'Old Password' field if not updating password",
+        });
+        return;
+      }
       userData = {
         name,
         email,
@@ -67,7 +84,7 @@ const Profile = (props) => {
 
     update(props.match.params.userId, token, userData).then((data) => {
       if (data.error) {
-        setValues({ ...values, error: true });
+        setValues({ ...values, error: data.error });
       } else {
         updateUserLocalStorage(data, () => {
           setValues({ ...values, success: true });
@@ -79,7 +96,7 @@ const Profile = (props) => {
   const clickSubmit = (e) => {
     e.preventDefault();
     if (password || password2) {
-      if (password === password2) {
+      if (password === password2 && oldPassword) {
         sendUpdateForm(1);
       } else {
         setValues({ ...values, passwordError: true });
@@ -90,42 +107,63 @@ const Profile = (props) => {
   };
 
   const profileUpdate = (name, email, password) => (
-    <form>
-      <div className="form-group">
-        <label className="text-muted">Name</label>
-        <input
-          type="text"
-          className="form-control"
-          value={name}
-          onChange={handleChange("name")}
-        />
+    <form style={{ display: loading ? "none" : "" }}>
+      <h2>Basic Info</h2>
+      <div
+        style={{ border: "2px solid #eee", borderRadius: "5px" }}
+        className="p-4 mt-3 mb-3"
+      >
+        <div className="form-group">
+          <label className="text-muted">Name</label>
+          <input
+            type="text"
+            className="form-control"
+            value={name}
+            onChange={handleChange("name")}
+          />
+        </div>
+        <div className="form-group">
+          <label className="text-muted">Email</label>
+          <input
+            type="email"
+            className="form-control"
+            value={email}
+            onChange={handleChange("email")}
+          />
+        </div>
       </div>
-      <div className="form-group">
-        <label className="text-muted">Email</label>
-        <input
-          type="email"
-          className="form-control"
-          value={email}
-          onChange={handleChange("email")}
-        />
-      </div>
-      <div className="form-group">
-        <label className="text-muted">New Password (optional)</label>
-        <input
-          type="password"
-          className="form-control"
-          value={password}
-          onChange={handleChange("password")}
-        />
-      </div>
-      <div className="form-group">
-        <label className="text-muted">Confirm New Password (optional)</label>
-        <input
-          type="password"
-          className="form-control"
-          value={password2}
-          onChange={handleChange("password2")}
-        />
+      <h2>Password</h2>
+      <div
+        style={{ border: "2px solid #eee", borderRadius: "5px" }}
+        className="p-4 mt-3 mb-3"
+      >
+        <div className="form-group">
+          <label className="text-muted">Old Password</label>
+          <input
+            type="password"
+            className="form-control"
+            value={oldPassword}
+            onChange={handleChange("oldPassword")}
+          />
+        </div>
+        <div className="form-group">
+          <label className="text-muted">New Password</label>
+          <input
+            type="password"
+            className="form-control"
+            value={password}
+            onChange={handleChange("password")}
+          />
+        </div>
+        <div className="form-group">
+          <label className="text-muted">Confirm New Password</label>
+          <input
+            type="password"
+            className="form-control"
+            value={password2}
+            onChange={handleChange("password2")}
+          />
+        </div>
       </div>
       <button onClick={clickSubmit} className="btn btn-primary">
         Update
@@ -142,19 +180,29 @@ const Profile = (props) => {
 
   const redirectUponSuccess = (success) => {
     if (success) {
-      return <Redirect to="/user/dashboard" />;
+      return (
+        <Redirect
+          to={{
+            pathname: "/user/dashboard",
+            state: {
+              successfulUpdate: true,
+            },
+          }}
+        />
+      );
     }
   };
 
   const showErrors = (error) =>
-    error && (
-      <div className="alert alert-danger">Error due to invalid credentials</div>
-    );
+    error && <div className="alert alert-danger">{error}</div>;
 
   const showPasswordError = (passwordError) =>
     passwordError && (
       <div className="alert alert-danger">Passwords confirmation error</div>
     );
+
+  const showLoading = (loading) =>
+    loading && <h3 className="text-muted">Loading User Details...</h3>;
 
   return (
     <Layout
@@ -162,7 +210,8 @@ const Profile = (props) => {
       description="Update your profile"
       className="container-fluid mb-5"
     >
-      <h2 className="mb-4">Profile Update</h2>
+      {/* <h2 className="mb-4">Profile Update</h2> */}
+      {showLoading(loading)}
       {showErrors(error)}
       {showPasswordError(passwordError)}
       {showSuccess(success)}

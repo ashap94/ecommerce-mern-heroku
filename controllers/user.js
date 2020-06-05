@@ -25,22 +25,74 @@ exports.read = (req, res) => {
   return res.json(req.profile);
 };
 
+// exports.update = (req, res) => {
+//   const {}
+//   User.findOneAndUpdate(
+//     { _id: req.profile._id },
+//     { $set: req.body },
+//     { new: true },
+//     (err, user) => {
+//       if (err) {
+//         return res.status(400).json({
+//           error: "You are not authorized to perform this action",
+//         });
+//       }
+//       user.hashed_password = undefined;
+//       user.salt = undefined;
+//       res.json(user);
+//     }
+//   );
+// };
+
 exports.update = (req, res) => {
-  User.findOneAndUpdate(
-    { _id: req.profile._id },
-    { $set: req.body },
-    { new: true },
-    (err, user) => {
+  const { name, email, oldPassword, password } = req.body;
+  User.findOne({ _id: req.profile._id }, (err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: "User not found",
+      });
+    }
+
+    if (password) {
+      if (!user.authenticate(oldPassword)) {
+        return res.status(401).json({
+          error: "Old Password does not match user's records",
+        });
+      } else {
+        if (password.length < 6) {
+          return res.status(422).json({
+            error: "Password requires minimum of 6 characters",
+          });
+        } else if (!/\d/.test(password)) {
+          return res.status(422).json({
+            error: "Password must contain a number",
+          });
+        } else {
+          console.log("HASHED PASSWORD BEFORE UPDATE:  ", user.hashed_password);
+          user.password = password;
+          console.log("USER UPDATED PASSWORD:  ", user.password);
+          console.log("HASHED PASSWORD AFTER UPDATE:  ", user.hashed_password);
+        }
+      }
+    }
+
+    if (name) {
+      user.name = name;
+    }
+
+    if (email) {
+      user.email = email;
+    }
+
+    user.save((err, updatedUser) => {
       if (err) {
         return res.status(400).json({
-          error: "You are not authorized to perform this action",
+          error: "User could not be updated due to invalid parameters",
         });
       }
-      user.hashed_password = undefined;
-      user.salt = undefined;
-      res.json(user);
-    }
-  );
+      res.json(updatedUser);
+    });
+  });
 };
 
 exports.addOrderToUserHistory = (req, res, next) => {

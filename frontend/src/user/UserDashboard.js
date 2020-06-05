@@ -2,15 +2,16 @@ import React, { useState, useEffect } from "react";
 import Layout from "../core/Layout";
 import { isAuthenticated } from "../auth";
 import { Link } from "react-router-dom";
-import { getUserPurchaseHistory } from "./apiUser";
+import { getUserPurchaseHistory, update } from "./apiUser";
 import moment from "moment";
 import { formatMoney } from "../core/apiCore";
 import ShowListItemImage from "./ShowListItemImage";
 
-const Dashboard = () => {
+const Dashboard = (props) => {
   const [history, setHistory] = useState([]);
   const [error, setError] = useState(false);
   const [modalDisplay, setModalDisplay] = useState(false);
+  const [updateSuccess, setUpdateSuccess] = useState(false);
 
   const {
     user: { _id, name, email, role },
@@ -28,13 +29,21 @@ const Dashboard = () => {
     });
   };
 
+  // successfulUpdate
+
   useEffect(() => {
+    console.log("HERE IS PROPS LOCATION STATE:  ", props.location.state);
+
+    if (props.location.state && props.location.state.successfulUpdate) {
+      setUpdateSuccess(true);
+    }
+
     init();
   }, []);
 
-  useEffect(() => {
-    console.log("HERE IS WHAT HISTORY LOOKS LIKE:  ", history);
-  }, [history]);
+  // useEffect(() => {
+  //   console.log("HERE IS WHAT HISTORY LOOKS LIKE:  ", history);
+  // }, [history]);
 
   const userLinks = () => {
     return (
@@ -173,12 +182,20 @@ const Dashboard = () => {
     );
   };
 
+  const showUpdateSuccess = (updateSuccess) =>
+    updateSuccess && (
+      <div className="alert alert-success">
+        Account information updated successful.
+      </div>
+    );
+
   return (
     <Layout
       title="Dashboard"
       description={`G'day ${name}!`}
       className="container-fluid"
     >
+      {showUpdateSuccess(updateSuccess)}
       <div className="row">
         <div className="col-md-3 mb-5">{userLinks()}</div>
         <div className="col-md-9">
