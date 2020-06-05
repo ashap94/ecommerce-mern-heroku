@@ -11,8 +11,8 @@ exports.userSignupValidator = (req, res, next) => {
   req.check("password", "Password is required").notEmpty();
   req
     .check("password")
-    .isLength({ min: 6 })
-    .withMessage("Password must be at least 6 characters")
+    .isLength({ min: 6, max: 30 })
+    .withMessage("Password length must be 6 to 30 characters")
     .matches(/\d/)
     .withMessage("Password must contain a number");
   const errors = req.validationErrors();

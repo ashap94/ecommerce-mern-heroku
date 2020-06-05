@@ -59,9 +59,9 @@ exports.update = (req, res) => {
           error: "Old Password does not match user's records",
         });
       } else {
-        if (password.length < 6) {
+        if (password.length < 6 || password.length > 30) {
           return res.status(422).json({
-            error: "Password requires minimum of 6 characters",
+            error: "Password length must be 6 to 30 characters long",
           });
         } else if (!/\d/.test(password)) {
           return res.status(422).json({
@@ -78,6 +78,20 @@ exports.update = (req, res) => {
     }
 
     if (email) {
+      /*
+        refactor regex later to utilize email verifcation API instead
+        to check valid email service and authentic email with said service
+      */
+
+      if (!/.+\@.+\..+/.test(email)) {
+        return res.status(422).json({
+          error: "Invalid email",
+        });
+      } else if (email.length > 60) {
+        return res.status(422).json({
+          error: "Email length must be less than 60 characters",
+        });
+      }
       user.email = email;
     }
 

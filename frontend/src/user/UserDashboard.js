@@ -32,8 +32,6 @@ const Dashboard = (props) => {
   // successfulUpdate
 
   useEffect(() => {
-    console.log("HERE IS PROPS LOCATION STATE:  ", props.location.state);
-
     if (props.location.state && props.location.state.successfulUpdate) {
       setUpdateSuccess(true);
     }

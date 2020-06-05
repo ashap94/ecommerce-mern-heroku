@@ -120,6 +120,7 @@ const Profile = (props) => {
             className="form-control"
             value={name}
             onChange={handleChange("name")}
+            maxLength="50"
           />
         </div>
         <div className="form-group">
@@ -129,6 +130,7 @@ const Profile = (props) => {
             className="form-control"
             value={email}
             onChange={handleChange("email")}
+            maxLength="60"
           />
         </div>
       </div>
@@ -144,6 +146,7 @@ const Profile = (props) => {
             className="form-control"
             value={oldPassword}
             onChange={handleChange("oldPassword")}
+            maxLength="30"
           />
         </div>
         <div className="form-group">
@@ -153,6 +156,7 @@ const Profile = (props) => {
             className="form-control"
             value={password}
             onChange={handleChange("password")}
+            maxLength="30"
           />
         </div>
         <div className="form-group">
@@ -162,6 +166,7 @@ const Profile = (props) => {
             className="form-control"
             value={password2}
             onChange={handleChange("password2")}
+            maxLength="30"
           />
         </div>
       </div>
