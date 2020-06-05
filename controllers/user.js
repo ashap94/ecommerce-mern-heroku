@@ -68,10 +68,7 @@ exports.update = (req, res) => {
             error: "Password must contain a number",
           });
         } else {
-          console.log("HASHED PASSWORD BEFORE UPDATE:  ", user.hashed_password);
           user.password = password;
-          console.log("USER UPDATED PASSWORD:  ", user.password);
-          console.log("HASHED PASSWORD AFTER UPDATE:  ", user.hashed_password);
         }
       }
     }
@@ -90,6 +87,11 @@ exports.update = (req, res) => {
           error: "User could not be updated due to invalid parameters",
         });
       }
+
+      // prevent data from being sent
+      updatedUser.hashed_password = undefined;
+      updatedUser.salt = undefined;
+
       res.json(updatedUser);
     });
   });
