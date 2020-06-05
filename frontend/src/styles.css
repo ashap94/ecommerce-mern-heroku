@@ -73,6 +73,15 @@
   font-weight: bold;
 }
 
+/* menu bar */
+
+.menu-bar {
+  position: fixed;
+  width: 100%;
+  background-color: rgb(21, 127, 251);
+  z-index: 50;
+}
+
 /* black shade form 10-1 */
 .black-10 {
   background: #f2f2f2;

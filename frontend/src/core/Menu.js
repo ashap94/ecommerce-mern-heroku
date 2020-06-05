@@ -11,7 +11,7 @@ const isActive = (history, path) => {
   }
 };
 
-const Menu = ({ history }) => {
+const Menu = ({ history, menuRef }) => {
   const [loaded, setLoaded] = useState(false);
   const cartBadgeRef = useRef(null);
 
@@ -28,13 +28,22 @@ const Menu = ({ history }) => {
     if (height > width) {
       current.style.width = height + "px";
     } else if (height < width) {
-      current.css.height = width + "px";
+      current.style.height = width + "px";
     }
   }, [loaded]);
 
+  /*
+  
+        style={{ borderBottom: "1px solid #007bff" }}
+  
+  */
+
   return (
-    <div>
-      <ul className="nav nav-tabs bg-primary">
+    <div className="menu-bar" ref={menuRef}>
+      <ul
+        className="nav nav-tabs bg-primary"
+        style={{ borderBottom: "1px solid #007bff" }}
+      >
         <li className="nav-item">
           <Link className="nav-link" to="/" style={isActive(history, "/")}>
             Home
